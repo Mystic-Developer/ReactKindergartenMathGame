@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .incorrect{
+            color: red;
+        }
+
+        .input_textbox:focus{
+            outline: none;
+            border-color: #9ecaed;
+            box-shadow: 0 0 10px #9ecaed;
+        }
+
+        .problem_holder_div{
+            background-color: pink;
+            width: fit-content;
+            padding: 5px 10px;
+            border-radius: 5px;
+            
+        }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+
+        class App extends React.Component {
+            constructor(props){
+                super(props);
+                this.state = {
+                    first_number: Math.ceil(Math.random() * 5),
+                    second_number: Math.ceil(Math.random() * 5),
+                    user_input: "",
+                    score: 0,
+                    incorrect: false
+                }
+            }
+
+            render(){
+                if (this.state.score >= 5){
+                    return this.renderWin();
+                }else{
+                    return this.renderProblem();
+                }
+            }
+
+            renderProblem(){
+                return(
+                    <div class="problem_holder_div">
+                        <h1 class={this.state.incorrect ? "incorrect" : ""}>{this.state.first_number} + {this.state.second_number}</h1>
+                        <input class="input_textbox" clas onKeyPress={this.input_KeyPress} onChange={this.update_user_input}  value={this.state.user_input} />
+                        <div>
+                            Score: {this.state.score}
+                        </div>
+                    </div>
+                );
+            }
+
+            renderWin(){
+                return (
+                    <h1>Congratulations! You win!</h1>
+                );
+            }
+            
+            input_KeyPress = (event) => {
+                if (event.key === "Enter"){
+                    const answer = parseInt(this.state.user_input);
+                    if (answer === this.state.first_number + this.state.second_number){
+                        this.setState( state => ({
+                            score: state.score + 1,
+                            first_number: Math.ceil(Math.random() * 5),
+                            second_number: Math.ceil(Math.random() * 5),
+                            user_input: "",
+                            incorrect: false
+                        }));
+                    }else{
+                        this.setState(state => ({
+                            user_input: "",
+                            incorrect: true
+                        }));
+                    }
+                }
+            }
+
+            update_user_input = (event) => {
+                this.setState( state => ({
+                    user_input: event.target.value
+                }));
+            }
+        }
+
+        ReactDOM.render(<App />,  document.querySelector('#app'));
+
+    </script>
+  </body>
+</html>
